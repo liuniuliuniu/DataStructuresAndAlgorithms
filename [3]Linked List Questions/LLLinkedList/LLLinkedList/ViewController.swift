@@ -66,7 +66,25 @@ class ViewController: UIViewController {
         return dummy.next
     }
     
-    
-
+    /*
+     快慢指针的解法，
+     */
+    func hasCycle(_ head: ListNode?) -> Bool {
+        guard let _ = head, let _ = head?.next else {
+            return false
+        }
+        
+        var fastNode = head?.next
+        var slowNode = head
+        
+        while fastNode != nil {
+            if slowNode === fastNode {
+                return true
+            }
+            fastNode = fastNode?.next?.next;
+            slowNode = slowNode?.next;
+        }
+        return false
+    }
 }
 
