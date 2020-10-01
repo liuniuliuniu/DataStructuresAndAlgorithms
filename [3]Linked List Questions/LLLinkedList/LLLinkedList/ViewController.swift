@@ -17,12 +17,11 @@ public class ListNode {
 }
 
 class ViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        reverseList(ListNode(1))
     }
-        
+    
     /// 1、反转链表
     func reverseList(_ head: ListNode?) -> ListNode? {
         var pre: ListNode? = nil
@@ -67,6 +66,7 @@ class ViewController: UIViewController {
     }
     
     /*
+     链表中环的检测
      快慢指针的解法，
      */
     func hasCycle(_ head: ListNode?) -> Bool {
@@ -86,5 +86,80 @@ class ViewController: UIViewController {
         }
         return false
     }
+    
+    /*
+     是否是回文字符串， 双指针思想
+     1、先将字符串按顺序放入数组中
+     2、按照数组两边依次对比
+     */
+    func isPalindrome(_ s: String) -> Bool {
+        
+        var copy: [Character] = []
+        for i in s.lowercased() {
+            if i >= "0" && i <= "9" {
+                copy.append(i)
+            }
+            else if i >= "a" && i <= "z" {
+                copy.append(i)
+            }
+        }
+        var i = 0, j = copy.count - 1
+        while i <= j {
+            if copy[i] != copy[j] { return false }
+            i += 1
+            j -= 1
+        }
+        return true
+    }
+    
+    /// 合并两个有序链表 迭代法
+    func mergeTwoLists(_ l1: ListNode?, _ l2: ListNode?) -> ListNode? {
+        var queue: [ListNode?] = [] //队列，储存待维护的节点
+        
+        var pointer1: ListNode? = l1    //指针指向l1的头
+        var pointer2: ListNode? = l2    //指针指向l2的头
+                
+        while pointer1 != nil || pointer2 != nil {  //同时遍历两个链表
+            let val1: Int = pointer1?.val ?? Int.max
+            let val2: Int = pointer2?.val ?? Int.max
+            
+            if val1 <= val2 {   //如果指针1所指向的节点值小于指针2所指向的节点值（或者节点2不存在），则将节点1加入到队列中，同时让队列中的最后一个节点指向节点1
+                if let pre = queue.last { pre?.next = pointer1 }
+                queue.append(pointer1)
+                pointer1 = pointer1?.next
+            } else {
+                if let pre = queue.last { pre?.next = pointer2 }
+                queue.append(pointer2)
+                pointer2 = pointer2?.next
+            }
+        }
+        return queue.first ?? nil   //队列队首即为新链表的表头
+    }
+    
+    /*
+     合并两个有序链表递归法
+     如果 l1 或者 l2 一开始就是空链表
+     ，那么没有任何操作需要合并，所以我们只需要返回非空链表。
+     否则，我们要判断 l1 和 l2
+哪一个链表的头节点的值更小，然后递归地决定下一个添加到结果里的节点。如果两个链表有一个为空，递归结束。
+     */
+    func mergeTwoListstwo(_ l1: ListNode?, _ l2: ListNode?) -> ListNode? {
+        guard let l1 = l1 else {
+            return l2
+        }
+        
+        guard let l2 = l2 else {
+            return l1
+        }
+        
+        if l1.val < l2.val {
+            l1.next = mergeTwoLists(l1.next, l2)
+            return l1
+        } else {
+            l2.next = mergeTwoLists(l1, l2.next)
+            return l2
+        }
+    }
+    
 }
 
